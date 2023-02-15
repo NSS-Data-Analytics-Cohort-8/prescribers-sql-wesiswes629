@@ -74,6 +74,17 @@ INNER JOIN prescription AS p
 
 --     b. Which drug (generic_name) has the hightest total cost per day? **Bonus: Round your cost per day column to 2 decimal places. Google ROUND to see how this works.**
 
+SELECT d.generic_name AS name,
+	ROUND(SUM(p.total_drug_cost)/COUNT(p.total_day_supply),2) AS daily_cost
+FROM drug AS d
+INNER JOIN prescription AS p
+	USING (drug_name)
+	GROUP BY name
+	ORDER BY daily_cost DESC
+	LIMIT 1;
+	
+-- Answer 3b: 	ASFOTASE ALFA cost 1890733.05
+
 -- 4. 
 --     a. For each drug in the drug table, return the drug name and then a column named 'drug_type' which says 'opioid' for drugs which have opioid_drug_flag = 'Y', says 'antibiotic' for those drugs which have antibiotic_drug_flag = 'Y', and says 'neither' for all other drugs.
 
