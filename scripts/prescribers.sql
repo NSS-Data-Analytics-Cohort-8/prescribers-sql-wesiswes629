@@ -123,10 +123,21 @@ INNER JOIN fips_county AS f
 
 --     b. Which cbsa has the largest combined population? Which has the smallest? Report the CBSA name and total population.
 
+SELECT cbsaname, SUM(population) AS total_pop
+FROM cbsa AS c
+INNER JOIN population AS p
+	USING (fipscounty)
+GROUP BY cbsaname
+ORDER BY total_pop;
+
+-- Answer 5b: Largest CBSA is Nashville-Davidson--Murfreesboro--Franklin, TN with 1830410.  The Smallest CBSA is Morristown, TN with 116352.           
+
 --     c. What is the largest (in terms of population) county which is not included in a CBSA? Report the county name and population.
 
 -- 6. 
 --     a. Find all rows in the prescription table where total_claims is at least 3000. Report the drug_name and the total_claim_count.
+
+
 
 --     b. For each instance that you found in part a, add a column that indicates whether the drug is an opioid.
 
