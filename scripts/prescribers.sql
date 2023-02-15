@@ -134,6 +134,17 @@ ORDER BY total_pop;
 
 --     c. What is the largest (in terms of population) county which is not included in a CBSA? Report the county name and population.
 
+SELECT p.fipscounty, county, SUM(population) AS total_pop, cbsaname
+	FROM population AS p
+	INNER JOIN fips_county
+		USING (fipscounty)
+	LEFT JOIN cbsa
+		USING (fipscounty)
+GROUP BY p.fipscounty, county, cbsaname
+ORDER BY cbsaname DESC, total_pop DESC;
+
+-- Answer 5c: SEVIER 95523
+
 -- 6. 
 --     a. Find all rows in the prescription table where total_claims is at least 3000. Report the drug_name and the total_claim_count.
 
