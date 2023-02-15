@@ -5,7 +5,8 @@
 
 SELECT npi, total_claim_count
 FROM prescription
-ORDER BY total_claim_count DESC;
+ORDER BY total_claim_count DESC
+LIMIT 1;
 
 -- Answer: npi 1912011792 claim count 4538
 
@@ -13,7 +14,8 @@ SELECT p.nppes_provider_first_name, p.nppes_provider_last_org_name, p.specialty_
 FROM prescriber AS p
 JOIN prescription AS p2
 	USING (npi)
-ORDER BY total_claim_count DESC;
+ORDER BY total_claim_count DESC
+LIMIT 1;
 
 -- Answer: DAVID COFFEY, Family Practice, had 4538
 
@@ -25,7 +27,8 @@ FROM prescriber AS p
 INNER JOIN prescription AS p2
 	USING (npi)
 	GROUP BY p.specialty_description
-ORDER BY total_claims DESC;
+ORDER BY total_claims DESC
+LIMIT 1;
 
 -- Answer a: Family practice with 9,752,347
 
@@ -38,7 +41,8 @@ INNER JOIN prescription
 INNER JOIN drug AS d
 	USING (drug_name)
 GROUP BY p.specialty_description
-ORDER BY opioids DESC;
+ORDER BY opioids DESC
+LIMIT 1;
 
 -- Answer b: Nurse Practitioner with 175734 opioid claims.
 
@@ -52,11 +56,21 @@ LEFT JOIN prescription AS p2
 	HAVING SUM(p2.total_claim_count) IS NULL;
 	
 
-
 --     d. **Difficult Bonus:** *Do not attempt until you have solved all other problems!* For each specialty, report the percentage of total claims by that specialty which are for opioids. Which specialties have a high percentage of opioids?
 
 -- 3. 
 --     a. Which drug (generic_name) had the highest total drug cost?
+
+SELECT d.generic_name AS generic,
+	SUM(p.total_drug_cost) AS cost
+FROM drug AS d
+INNER JOIN prescription AS p
+	USING (drug_name)
+	GROUP BY generic
+	ORDER BY cost DESC
+	LIMIT 1;
+	
+-- Answer a: INSULIN GLARGINE,HUM.REC.ANLOG cost 104264066.35
 
 --     b. Which drug (generic_name) has the hightest total cost per day? **Bonus: Round your cost per day column to 2 decimal places. Google ROUND to see how this works.**
 
