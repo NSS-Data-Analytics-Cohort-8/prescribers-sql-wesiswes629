@@ -148,7 +148,12 @@ ORDER BY cbsaname DESC, total_pop DESC;
 -- 6. 
 --     a. Find all rows in the prescription table where total_claims is at least 3000. Report the drug_name and the total_claim_count.
 
+SELECT drug_name, total_claim_count
+FROM prescription
+WHERE total_claim_count >= 3000
+ORDER BY drug_name;
 
+-- Answer 6a: there are 9.
 
 --     b. For each instance that you found in part a, add a column that indicates whether the drug is an opioid.
 
