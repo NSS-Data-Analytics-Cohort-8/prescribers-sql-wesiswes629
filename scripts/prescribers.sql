@@ -271,6 +271,20 @@ WHERE p.specialty_description = 'Cardiology'
 
 --     c. Which drugs are in the top five prescribed by Family Practice prescribers and Cardiologists? Combine what you did for parts a and b into a single query to answer this question.
 
+SELECT d.generic_name, SUM(total_claim_count) AS claims
+FROM prescription AS rx
+INNER JOIN drug AS d
+	USING (drug_name)
+INNER JOIN prescriber AS p
+	USING (npi)
+WHERE p.specialty_description = 'Family Practice'
+	OR p.specialty_description = 'Cardiologist'
+	GROUP BY d.generic_name
+	ORDER BY claims DESC
+	LIMIT 5;
+	
+-- BONUS 2c: "LEVOTHYROXINE SODIUM" "LISINOPRIL" "ATORVASTATIN CALCIUM" "AMLODIPINE BESYLATE" "OMEPRAZOLE"
+
 -- 3. Your goal in this question is to generate a list of the top prescribers in each of the major metropolitan areas of Tennessee.
 --     a. First, write a query that finds the top 5 prescribers in Nashville in terms of the total number of claims (total_claim_count) across all drugs. Report the npi, the total number of claims, and include a column showing the city.
     
