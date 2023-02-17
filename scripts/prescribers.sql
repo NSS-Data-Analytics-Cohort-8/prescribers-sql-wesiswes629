@@ -199,18 +199,16 @@ WHERE p1.specialty_description = 'Pain Management'
 	
 --     b. Next, report the number of claims per drug per prescriber. Be sure to include all combinations, whether or not the prescriber had any claims. You should report the npi, the drug name, and the number of claims (total_claim_count).
 
-
-SELECT p1.npi, d.drug_name, total_claim_count
-FROM prescription AS p1
+SELECT p1.npi, d.drug_name, SUM(total_claim_count)
+FROM prescriber AS p1
 CROSS JOIN drug AS d
-INNER JOIN prescriber AS p2
-	USING (npi)
-WHERE p2.specialty_description = 'Pain Management'
+LEFT JOIN prescription AS p2
+	ON d.drug_name = p2.drug_name
+WHERE p1.specialty_description = 'Pain Management'
 	AND opioid_drug_flag = 'Y'
 	AND nppes_provider_city = 'NASHVILLE'
-	ORDER BY p1.npi;
-	
-	
+	GROUP BY p1.npi, d.drug_name
+	ORDER BY npi;	
 	
 
     
