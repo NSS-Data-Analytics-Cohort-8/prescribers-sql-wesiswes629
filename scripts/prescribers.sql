@@ -208,8 +208,18 @@ WHERE p1.specialty_description = 'Pain Management'
 	AND opioid_drug_flag = 'Y'
 	AND nppes_provider_city = 'NASHVILLE'
 	GROUP BY p1.npi, d.drug_name
-	ORDER BY npi;	
+	ORDER BY npi, drug_name;	
 	
-
-    
+   
 --     c. Finally, if you have not done so already, fill in any missing values for total_claim_count with 0. Hint - Google the COALESCE function.
+
+SELECT p1.npi, d.drug_name, COALESCE(SUM(total_claim_count),0)
+FROM prescriber AS p1
+CROSS JOIN drug AS d
+LEFT JOIN prescription AS p2
+	ON d.drug_name = p2.drug_name
+WHERE p1.specialty_description = 'Pain Management'
+	AND opioid_drug_flag = 'Y'
+	AND nppes_provider_city = 'NASHVILLE'
+	GROUP BY p1.npi, d.drug_name
+	ORDER BY npi, drug_name;
