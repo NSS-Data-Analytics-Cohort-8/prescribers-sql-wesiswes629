@@ -3,21 +3,24 @@
     
 --     b. Repeat the above, but this time report the nppes_provider_first_name, nppes_provider_last_org_name,  specialty_description, and the total number of claims.
 
-SELECT npi, total_claim_count
+SELECT npi, SUM(total_claim_count) AS count
 FROM prescription
-ORDER BY total_claim_count DESC
+GROUP BY npi
+ORDER BY count DESC
 LIMIT 1;
 
 -- Answer: npi 1912011792 claim count 4538
 
-SELECT p.nppes_provider_first_name, p.nppes_provider_last_org_name, p.specialty_description, p2.total_claim_count
+SELECT p.nppes_provider_first_name AS first_name, p.nppes_provider_last_org_name AS last_name, 
+	p.specialty_description AS description, SUM(p2.total_claim_count) AS claims
 FROM prescriber AS p
 JOIN prescription AS p2
 	USING (npi)
-ORDER BY total_claim_count DESC
+GROUP BY first_name, last_name, description
+ORDER BY claims DESC
 LIMIT 1;
 
--- Answer: DAVID COFFEY, Family Practice, had 4538
+-- Answer: BRUCE PENDLEY, Family Practice, had 99707
 
 -- 2. 
 --     a. Which specialty had the most total number of claims (totaled over all drugs)?
@@ -55,6 +58,7 @@ LEFT JOIN prescription AS p2
 	GROUP BY p.specialty_description
 	HAVING SUM(p2.total_claim_count) IS NULL;
 	
+-- Answer 2c: there are 15 specialties
 
 --     d. **Difficult Bonus:** *Do not attempt until you have solved all other problems!* For each specialty, report the percentage of total claims by that specialty which are for opioids. Which specialties have a high percentage of opioids?
 
@@ -288,6 +292,8 @@ WHERE p.specialty_description = 'Family Practice'
 -- 3. Your goal in this question is to generate a list of the top prescribers in each of the major metropolitan areas of Tennessee.
 --     a. First, write a query that finds the top 5 prescribers in Nashville in terms of the total number of claims (total_claim_count) across all drugs. Report the npi, the total number of claims, and include a column showing the city.
     
+
+	
 --     b. Now, report the same for Memphis.
     
 --     c. Combine your results from a and b, along with the results for Knoxville and Chattanooga.
