@@ -58,6 +58,8 @@ LEFT JOIN prescription AS p2
 
 --     d. **Difficult Bonus:** *Do not attempt until you have solved all other problems!* For each specialty, report the percentage of total claims by that specialty which are for opioids. Which specialties have a high percentage of opioids?
 
+
+
 -- 3. 
 --     a. Which drug (generic_name) had the highest total drug cost?
 
@@ -223,3 +225,35 @@ WHERE p1.specialty_description = 'Pain Management'
 	AND nppes_provider_city = 'NASHVILLE'
 	GROUP BY p1.npi, d.drug_name
 	ORDER BY npi, drug_name;
+
+-- 1. How many npi numbers appear in the prescriber table but not in the prescription table?
+
+SELECT COUNT(p.npi) AS not_on_rx
+FROM prescriber AS p
+LEFT JOIN prescription AS rx
+	ON p.npi = rx.npi
+	WHERE rx.npi IS NULL;
+	
+-- BONUS 1: There are 4458 not on the prescription table.
+
+-- 2.
+--     a. Find the top five drugs (generic_name) prescribed by prescribers with the specialty of Family Practice.
+
+--     b. Find the top five drugs (generic_name) prescribed by prescribers with the specialty of Cardiology.
+
+--     c. Which drugs are in the top five prescribed by Family Practice prescribers and Cardiologists? Combine what you did for parts a and b into a single query to answer this question.
+
+-- 3. Your goal in this question is to generate a list of the top prescribers in each of the major metropolitan areas of Tennessee.
+--     a. First, write a query that finds the top 5 prescribers in Nashville in terms of the total number of claims (total_claim_count) across all drugs. Report the npi, the total number of claims, and include a column showing the city.
+    
+--     b. Now, report the same for Memphis.
+    
+--     c. Combine your results from a and b, along with the results for Knoxville and Chattanooga.
+
+-- 4. Find all counties which had an above-average number of overdose deaths. Report the county name and number of overdose deaths.
+
+-- 5.
+--     a. Write a query that finds the total population of Tennessee.
+    
+--     b. Build off of the query that you wrote in part a to write a query that returns for each county that county's name, its population, and the percentage of the total population of Tennessee that is contained in that county.
+
