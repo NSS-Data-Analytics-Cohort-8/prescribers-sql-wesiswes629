@@ -239,7 +239,24 @@ LEFT JOIN prescription AS rx
 -- 2.
 --     a. Find the top five drugs (generic_name) prescribed by prescribers with the specialty of Family Practice.
 
+
+SELECT d.generic_name, SUM(total_claim_count) AS claims
+FROM prescription AS rx
+INNER JOIN drug AS d
+	USING (drug_name)
+INNER JOIN prescriber AS p
+	USING (npi)
+WHERE p.specialty_description = 'Family Practice'
+	GROUP BY d.generic_name
+	ORDER BY claims DESC
+	LIMIT 5;
+	
+-- BONUS 2a: LEVOTHYROXINE SODIUM with 406547, LISINOPRIL with 311506, ATORVASTATIN CALCIUM with 308523,
+-- 			AMLODIPINE BESYLATE with 304343, OMEPRAZOLE with 273570
+
 --     b. Find the top five drugs (generic_name) prescribed by prescribers with the specialty of Cardiology.
+
+
 
 --     c. Which drugs are in the top five prescribed by Family Practice prescribers and Cardiologists? Combine what you did for parts a and b into a single query to answer this question.
 
