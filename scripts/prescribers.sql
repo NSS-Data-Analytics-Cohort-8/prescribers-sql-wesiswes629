@@ -93,48 +93,6 @@ FROM prescriber AS p
 
 -- Answer 2d: The seven highest have over 50% opioids.  Those are: "Case Manager/Care Coordinator" "Orthopaedic Surgery", "Interventional Pain Management", "Anesthesiology", "Pain Management", "Hand Surgery" and "Surgical Oncology"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-SELECT p.specialty_description,
-	SUM(p2.total_claim_count) AS claims
-FROM prescription AS p2
-INNER JOIN prescriber AS p
-	USING (npi)
-INNER JOIN drug AS d
-	USING (drug_name)
-	WHERE d.opioid_drug_flag = 'Y'
-	GROUP BY p.specialty_description;
-	 
-
-SELECT p.specialty_description,
-	SUM(p2.total_claim_count) AS claims
-FROM prescription AS p2
-INNER JOIN prescriber AS p
-	USING (npi)
-INNER JOIN drug AS d
-	USING (drug_name)
-	GROUP BY p.specialty_description;
-
-
 -- 3. 
 --     a. Which drug (generic_name) had the highest total drug cost?
 
@@ -363,11 +321,53 @@ WHERE p.specialty_description = 'Family Practice'
 -- 3. Your goal in this question is to generate a list of the top prescribers in each of the major metropolitan areas of Tennessee.
 --     a. First, write a query that finds the top 5 prescribers in Nashville in terms of the total number of claims (total_claim_count) across all drugs. Report the npi, the total number of claims, and include a column showing the city.
     
+SELECT p.npi, p.nppes_provider_city, SUM (rx.total_claim_count) AS total_claims
+FROM prescriber AS p
+INNER JOIN prescription AS rx
+	USING (npi)
+INNER JOIN zip_fips AS z
+	ON p.nppes_provider_zip5 = z.zip
+INNER JOIN cbsa AS c
+	ON z.fipscounty = c.fipscounty
+WHERE c.cbsa = '34980'
+GROUP BY p.npi, p.nppes_provider_city
+ORDER BY total_claims DESC
+LIMIT 5;
 
-	
+
 --     b. Now, report the same for Memphis.
+
+SELECT p.npi, p.nppes_provider_city, SUM (rx.total_claim_count) AS total_claims
+FROM prescriber AS p
+INNER JOIN prescription AS rx
+	USING (npi)
+INNER JOIN zip_fips AS z
+	ON p.nppes_provider_zip5 = z.zip
+INNER JOIN cbsa AS c
+	ON z.fipscounty = c.fipscounty
+WHERE c.cbsa = '32820'
+GROUP BY p.npi, p.nppes_provider_city
+ORDER BY total_claims DESC
+LIMIT 5;
     
 --     c. Combine your results from a and b, along with the results for Knoxville and Chattanooga.
+
+SELECT p.npi, p.nppes_provider_city, c.cbsaname, SUM (rx.total_claim_count) AS total_claims
+FROM prescriber AS p
+INNER JOIN prescription AS rx
+	USING (npi)
+INNER JOIN zip_fips AS z
+	ON p.nppes_provider_zip5 = z.zip
+INNER JOIN cbsa AS c
+	ON z.fipscounty = c.fipscounty
+WHERE c.cbsa = '16860'
+	OR c.cbsa = '28940'
+	OR c.cbsa = '32820'
+	OR c.cbsa = '34980'
+GROUP BY p.npi, p.nppes_provider_city, c.cbsaname
+ORDER BY total_claims DESC
+LIMIT 15;
+
 
 -- 4. Find all counties which had an above-average number of overdose deaths. Report the county name and number of overdose deaths.
 
