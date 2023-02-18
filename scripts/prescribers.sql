@@ -62,6 +62,77 @@ LEFT JOIN prescription AS p2
 
 --     d. **Difficult Bonus:** *Do not attempt until you have solved all other problems!* For each specialty, report the percentage of total claims by that specialty which are for opioids. Which specialties have a high percentage of opioids?
 
+WITH all_opioids AS
+	(SELECT p.specialty_description, 
+	SUM(p2.total_claim_count) AS op_claims
+	FROM prescription AS p2
+	INNER JOIN prescriber AS p
+	USING (npi)
+	INNER JOIN drug AS d
+ 	USING (drug_name)
+	WHERE d.opioid_drug_flag = 'Y'
+	GROUP BY p.specialty_description),
+	all_claims AS 
+	(SELECT p.specialty_description,
+	SUM(p2.total_claim_count) AS t_claims
+	FROM prescription AS p2
+	INNER JOIN prescriber AS p
+	USING (npi)
+	INNER JOIN drug AS d
+	USING (drug_name)
+	GROUP BY p.specialty_description)
+SELECT p.specialty_description, 
+	ROUND(AVG(o.op_claims/t.t_claims),5) AS pertotal
+FROM prescriber AS p
+	INNER JOIN all_opioids AS o
+	ON p.specialty_description = o.specialty_description
+	INNER JOIN all_claims AS t
+	ON p.specialty_description = t.specialty_description
+	GROUP BY p.specialty_description
+	ORDER BY pertotal DESC;
+
+-- Answer 2d: The seven highest have over 50% opioids.  Those are: "Case Manager/Care Coordinator" "Orthopaedic Surgery", "Interventional Pain Management", "Anesthesiology", "Pain Management", "Hand Surgery" and "Surgical Oncology"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT p.specialty_description,
+	SUM(p2.total_claim_count) AS claims
+FROM prescription AS p2
+INNER JOIN prescriber AS p
+	USING (npi)
+INNER JOIN drug AS d
+	USING (drug_name)
+	WHERE d.opioid_drug_flag = 'Y'
+	GROUP BY p.specialty_description;
+	 
+
+SELECT p.specialty_description,
+	SUM(p2.total_claim_count) AS claims
+FROM prescription AS p2
+INNER JOIN prescriber AS p
+	USING (npi)
+INNER JOIN drug AS d
+	USING (drug_name)
+	GROUP BY p.specialty_description;
 
 
 -- 3. 
